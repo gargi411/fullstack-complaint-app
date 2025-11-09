@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Signup - Transport CMS</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <style>
+    body{font-family:Arial;margin:2rem;background:#f5f5f5}
+    .card{max-width:420px;margin:2rem auto;padding:1.5rem;background:#fff;border:1px solid #ddd;border-radius:6px}
+    input{width:100%;padding:.6rem;margin:.4rem 0;border:1px solid #ccc;border-radius:4px}
+    button{padding:.6rem 1rem;border:0;background:#000;color:#fff;border-radius:4px;cursor:pointer}
+    .small{font-size:.9rem;color:#666;margin-top:.6rem}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Create account</h2>
+    <input id="name" placeholder="Full name" />
+    <input id="email" placeholder="Email" type="email" />
+    <input id="password" placeholder="Password (min 6 char)" type="password" />
+    <button id="signupBtn">Sign up</button>
+    <p class="small">Already have an account? <a href="login.html">Login</a></p>
+  </div>
+
+  <script>
+    document.getElementById('signupBtn').addEventListener('click', async () => {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      if (!name || !email || password.length < 6) return alert('Fill valid details (password >= 6)');
+      try {
+        const res = await fetch('http://localhost:5000/api/auth/register', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ name, email, password })
+        });
+        const data = await res.json();
+        if (data.success) { alert('Registered! Please login.'); location.href='login.html'; }
+        else alert('Error: ' + (data.error || 'server error'));
+      } catch (err) { alert('Network error'); console.error(err); }
+    });
+  </script>
+</body>
+</html>
